@@ -1,0 +1,18 @@
+megs: 16
+
+# hard disk
+# ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+
+# floppy
+floppya: type=1_44, 1_44="D:\flareon\challenge12\suspicious_floppy_v1.0.img", status=inserted
+
+# what disk images will be used:
+# ata0-master: type=disk, path="D:\flareon\challenge8\c.img", mode=flat
+
+clock: sync=none
+
+boot: floppy
+panic: action=fatal
+error: action=report
+info: action=report
+debug: action=ignore

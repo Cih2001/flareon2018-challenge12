@@ -1,0 +1,728 @@
+%include "include\macros.inc"	
+%include "include\2dad.inc"
+
+extern	_GetStdHandle@4
+extern	_WriteFile@20
+extern	_ExitProcess@4
+extern	_ReadFile@20
+extern	_GetLastError@0
+
+SECTION	.text
+
+    global	_main	; PE Entry
+
+
+vm_entry:
+    push ebp
+    mov ebp, esp
+    sub esp, 4
+    ; Translation of A to FFA:
+    lbl_0005: jmp lbl_0009
+    ; lbl_0008: db 0xB7, 0x25 
+    lbl_0009: 
+    ; lbl_0009-0012: MMOV lbl_002D, lbl_00FB
+    ; lbl_0012-001E: MOV lbl_002E, lbl_00FB
+    ; lbl_001E-002A: MOV lbl_0034, lbl_00FB
+    ; lbl_002A-0036: MOV lbl_00F5, lbl_0008
+    INDDES_MOV 0x00FB, 0x0008
+    ; lbl_0036-0039: XOR lbl_0000, lbl_0000
+    ; lbl_0039-003C: JMP lbl_003D
+    jmp lbl_003D
+
+    lbl_003D:
+    ; lbl_003D-0043: MADD lbl_00FB, lbl_003C
+    ; lbl_0043-0046: XOR lbl_0000, lbl_0000
+    ; lbl_0046-0049: JMP lbl_004A
+    MADD 0x00FB, 0x003C
+    jmp lbl_004A
+
+    lbl_004A:
+    ; lbl_0049-004A: db F6, 07
+    ; lbl_004A-0053: MMOV lbl_0049, lbl_0059
+    ; lbl_0053-0056: XOR lbl_0000, lbl_0000
+    ; lbl_0056-0059: JMP lbl_005A
+    MOV 0x0049, 0x0059
+    jmp lbl_005A
+
+    lbl_005A:
+    ; lbl_0059-005A: db F6, 07
+    ; lbl_005A-0063: MMOV lbl_007E, lbl_00FB
+    ; lbl_0063-006F: MOV lbl_007F, lbl_00FB
+    ; lbl_006F-007B: MOV lbl_0085, lbl_00FB
+    ; lbl_007B-0087: MOV lbl_00F6, lbl_0049
+    INDDES_MOV 0x00FB, 0x0049
+    ; lbl_0087-008A: XOR lbl_0000, lbl_0000
+    ; lbl_008A-008D: JMP lbl_008E
+    jmp lbl_008E
+
+    lbl_008E:
+    ; lbl_008D-008E: db 01, 00
+    ; lbl_008E-0094: MADD lbl_00FB, lbl_008D
+    ; lbl_0094-0097: XOR lbl_0000, lbl_0000
+    ; lbl_0097-009A: JMP lbl_009B
+    MADD 0x00FB, 0x008D
+    jmp lbl_009B
+
+    lbl_009B:
+    ; lbl_009A-009B: db EB, 00
+    ; lbl_009B-00A4: MMOV lbl_009A, lbl_00AA
+    ; lbl_00A4-00A7: XOR lbl_0000, lbl_0000
+    ; lbl_00A7-00AA: JMP lbl_00AB
+    MOV 0x009A, 0x00AA
+    jmp lbl_00AB
+
+    lbl_00AB:
+    ; lbl_00AA-00AB: db EB, 00
+    ; lbl_00AB-00B4: MMOV lbl_00CF, lbl_00FB
+    ; lbl_00B4-00C0: MOV lbl_00D0, lbl_00FB
+    ; lbl_00C0-00CC: MOV lbl_00D6, lbl_00FB
+    ; lbl_00CC-00D8: MOV lbl_00F7, lbl_009A
+    INDDES_MOV 0x00FB, 0x009A
+    ; lbl_00D8-00DB: XOR lbl_0000, lbl_0000
+    ; lbl_00DB-00DE: JMP lbl_00DF
+    jmp lbl_00DF
+
+    lbl_00DF:
+    ; lbl_00DE-00DF: db 01, 00
+    ; lbl_00DF-00E5: MADD lbl_00FB, lbl_00DE
+    ; lbl_00E5-00E8: XOR lbl_0000, lbl_0000
+    ; lbl_00E8-00EB: JMP lbl_00FC
+    MADD 0x00FB, 0x00DE
+    jmp lbl_00FC
+
+    lbl_00EB:
+    ; lbl_00EB-00EC: db F1, 00
+    ; lbl_00EC-00ED: db FB, 00
+    ; lbl_00ED-00EE: db 00, 00
+    SUB 0x00FB, 0x00F1
+    ; lbl_00EE-00F0: db 00, 00, 00, 00
+    ; lbl_00F0-00F1: db F2, 00
+    jmp lbl__00F2
+    ; lbl_00F1-00F2: db 02, 00
+
+    lbl__00F2:
+    ; lbl_00F2-00F5: JMP lbl_FFFF
+    lbl_00F2: jmp end
+
+    ; NOT IMPLEMENTED - DATA
+    ; lbl_00F5-00F6: db B7, 25
+    ; lbl_00F6-00F7: db F6, 07
+    ; lbl_00F7-00F8: db EB, 00
+    ; lbl_00F8-00F9: db F6, 07
+    ; lbl_00F9-00FA: db E6, 02
+    ; lbl_00FA-00FB: db 00, 00
+    ; lbl_00FB-00FC: db F5, 00
+
+    ; lbl_00FC-00FF: JMP lbl_0100
+    lbl_00FC: jmp lbl_0100
+
+    lbl_0100:
+    ; lbl_00FF-0100: db F8, 00
+    ; lbl_0100-0109: MMOV lbl_00FF, lbl_00FB
+    ; lbl_0109-010C: XOR lbl_0000, lbl_0000
+    ; lbl_010C-010F: JMP lbl_0110
+    MOV 0x00FF, 0x00FB
+    jmp lbl_0110
+
+    lbl_0110:
+    ; lbl_010F-0110: db F6, 07
+    ; lbl_0110-0113: JMP lbl_0114
+    jmp lbl_0114
+
+    lbl_0114:
+    ; lbl_0113-0114: db FE, FF
+    ; lbl_0114-0117: JMP lbl_0118
+    jmp lbl_0118
+
+    lbl_0118:
+    ; lbl_0117-0118: db F6, 00
+    ; lbl_0118-012A: ADD lbl_0117, lbl_00FF + lbl_0113
+    ADD3 0x0117, 0x00FF , 0x0113
+    ; lbl_012A-0136: MOV lbl_013C, lbl_0117
+    ; lbl_0136-0142: MOV lbl_010F, lbl_00F6
+    INDSRC_MOV 0x010F, 0x0117
+    ; lbl_0142-0145: XOR lbl_0000, lbl_0000
+    ; lbl_0145-0148: JMP lbl_0149
+    jmp lbl_0149
+
+    lbl_0149:
+    ; lbl_0148-0149: db B7, 25
+    ; lbl_0149-014C: JMP lbl_014D
+    jmp lbl_014D
+
+    lbl_014D:
+    ; lbl_014C-014D: db FD, FF
+    ; lbl_014D-0150: JMP lbl_0151
+    jmp lbl_0151
+
+    lbl_0151:
+    ; lbl_0150-0151: db F5, 00
+    ; lbl_0151-0163: ADD lbl_0150, lbl_00FF + lbl_014C
+    ADD3 0x0150, 0x00FF, 0x014C
+    ; lbl_0163-016F: MOV lbl_0175, lbl_0150
+    ; lbl_016F-017B: MOV lbl_0148, lbl_00F5
+    INDSRC_MOV 0x0148, 0x0150
+    ; lbl_017B-017E: XOR lbl_0000, lbl_0000
+    ; lbl_017E-0181: JMP lbl_0182
+    jmp lbl_0182
+
+    lbl_0182:
+    ; lbl_0181-0182: db 79, 06
+    ; lbl_0182-0185: JMP lbl_0186
+    jmp lbl_0186
+
+    lbl_0186:
+    ; lbl_0185-0186: db F6, 07
+    ; lbl_0186-0189: JMP lbl_018A
+    jmp lbl_018A
+
+    lbl_018A:
+    ; lbl_0189-018A: db FE, FF
+    ; lbl_018A-018D: JMP lbl_018E
+    jmp lbl_018E
+
+    lbl_018E:
+    ; lbl_018D-018E: db FE, FF
+    ; lbl_018E-0191: JMP lbl_0192
+    jmp lbl_0192
+
+    lbl_0192:
+    ; lbl_0191-0192: db 03, 00
+    ; lbl_0192-0195: JMP lbl_0196
+    jmp lbl_0196
+
+    lbl_0196:
+    ; lbl_0195-0196: db 04, 00
+    ; lbl_0196-0199: JMP lbl_019A
+    jmp lbl_019A
+
+    lbl_019A:
+    ; lbl_0199-019A: db 05, 00
+    ; lbl_019A-019D: JMP lbl_019E
+    jmp lbl_019E
+
+    lbl_019E:
+    ; lbl_019D-019E: db 06, 00
+    ; lbl_019E-01A1: JMP lbl_01A2
+    jmp lbl_01A2
+
+    lbl_01A2:
+    ; lbl_01A1-01A2: db 00 00
+    ; lbl_01A2-01A5: jmp lbl_01A6
+    jmp lbl_01A6
+
+    lbl_01A6:
+    ; lbl_01A5-01A6: db 01, 00
+    ; lbl_01A6-01A9: JMP lbl_01AA
+    jmp lbl_01AA
+
+    lbl_01AA:
+    ; lbl_01A9-01AC: db 00 00
+    ; lbl_01AA-01AD: JMP lbl_01AE
+    jmp lbl_01AE
+
+    lbl_01AE:
+    ; lbl_01AD-01AE: db 5B, 01
+    ; lbl_01AE-01B7: MMOV lbl_0185, lbl_010F
+    MOV 0x0185, 0x010F
+    ; lbl_01B7-01C3: MOV lbl_01C9, lbl_0185
+    ; lbl_01C3-01CF: MOV lbl_01AD, lbl_07F6
+    INDSRC_MOV 0x01AD, 0x185
+    lbl_01D2:
+    ; lbl_01CF-01DB: MOV lbl_0185, lbl_010F
+    MOV 0x0185, 0x010F
+    ; lbl_01DB-01E7: MOV lbl_01ED, lbl_0185
+    ; lbl_01E7-01F3: MOV lbl_0181, lbl_07F6
+    INDSRC_MOV 0x0181, 0x185
+    ; lbl_01F3-01FF: MOV lbl_0211, lbl_0181
+    ; lbl_01FF-0208: SUB lbl_0211, lbl_0148; JA lbl_020B
+    MOV 0x0211, 0x0181
+    SUBJG 0x0211, 0x148, lbl_020B
+
+    lbl_0208:
+    ; lbl_0208-020B: JMP lbl_0212
+    jmp lbl_0212
+    
+    
+    lbl_020B:
+    ; lbl_020B-020E: XOR lbl_0000, lbl_0000
+    ; lbl_020E-0211: JMP lbl_04C2
+    jmp lbl_04C2
+
+    lbl_0212:
+    ; lbl_0211-0212: db C2, E0
+    ; lbl_0212-0218: MADD lbl_0185, lbl_0181
+    MADD 0x0185, 0x0181
+    ; lbl_0218-0224: MOV lbl_022A, lbl_0185
+    ; lbl_0224-0230: MOV lbl_0189, lbl_0E6F
+    INDSRC_MOV 0x0189, 0x0185
+    ; lbl_0230-023C: MOV lbl_0254, lbl_0189
+    ; lbl_023C-0245: SUB lbl_0254, lbl_018D; JA lbl_0248
+    MOV 0x0254, 0x0189
+    SUBJG 0x0254, 0x018D, lbl_0248
+
+    lbl_0245:
+    ; lbl_0245-0248: JMP lbl_024E
+    jmp lbl_024E
+
+    lbl_0248:
+    ; lbl_0248-024E: CMP lbl_0254, 0; JZ lbl_0251
+    CMPJZ 0x0254, lbl_0251
+
+    lbl_024E:
+    ; lbl_024E-0251: JMP lbl_0255
+    jmp lbl_0255
+
+    lbl_0251:
+    ; lbl_0251-0254: JMP lbl_04C2
+    jmp lbl_04C2
+
+    lbl_0255:
+    ; lbl_0254-0255: db 00, 00
+    ; lbl_0255-025E: MMOV lbl_0279, lbl_00FB
+    ; lbl_025E-026A: MOV lbl_027A, lbl_00FB
+    ; lbl_026A-0276: MOV lbl_0280, lbl_00FB
+    ; lbl_0276-0282: MOV lbl_00F8, lbl_010F
+    INDDES_MOV 0x00FB, 0x010F
+    ; lbl_0282-0285: XOR lbl_0000, lbl_0000
+    ; lbl_0285-0288: JMP lbl_0289
+    jmp lbl_0289
+
+    lbl_0289:
+    ; lbl_0288-0289: db 01, 00
+    ; lbl_0289-028F: MADD lbl_00FB, lbl_0288
+    MADD 0x00FB, 0x0288
+    ; lbl_028F-0292: XOR lbl_0000, lbl_0000
+    ; lbl_0292-0295: JMP lbl_0296
+    jmp lbl_0296
+
+    lbl_0296:
+    ; lbl_0295-0296: db E6, 02
+    ; lbl_0296-029F: MMOV lbl_0295, lbl_02A5
+    MOV 0x_0295, 0x_02A5
+    ; lbl_029F-02A2: XOR lbl_0000, lbl_0000
+    ; lbl_02A2-02A5: JMP lbl_02A6
+    jmp lbl_02A6
+
+    lbl_02A6:
+    ; lbl_02A5-02A6: db E6, 02
+    ; lbl_02A6-02AF: MMOV lbl_02CA, lbl_00FB
+    ; lbl_02AF-02BB: MOV lbl_02CB, lbl_00FB
+    ; lbl_02BB-02C7: MOV lbl_02D1, lbl_00FB
+    ; lbl_02C7-02D3: MOV lbl_00F9, lbl_0295
+    INDDES_MOV 0x00FB, 0x_0295
+    ; lbl_02D3-02D6: XOR lbl_0000, lbl_0000
+    ; lbl_02D6-02D9: JMP lbl_02DA
+    jmp lbl_02DA
+
+    lbl_02DA:
+    ; lbl_02D9-02DA: db 01, 00
+    ; lbl_02DA-02E0: MADD lbl_00FB, lbl_02D9
+    MADD 0x_00FB, 0x_02D9
+    ; lbl_02E0-02E3: XOR lbl_0000, lbl_0000
+    ; lbl_02E3-02E6: JMP lbl_0520
+    jmp lbl_0520
+
+    lbl_02E6:
+    ; lbl_02E6-02E7: db EC, 02
+    ; lbl_02E7-02E8: db FB, 00
+    ; lbl_02E8-02EB: XOR lbl_0000, lbl_0000
+    ; lbl_02EB-02EC: db ED, 02
+    SUB 0x00FB, 0x02EC
+    jmp lbl_02ED
+
+    lbl_02ED:
+    ; lbl_02EC-02ED: db 01, 00
+    ; lbl_02ED-02FF: ADD lbl_0185, lbl_019D + lbl_010F
+    ADD3 0x0185, 0x019D, 0x010F
+    ; lbl_02FF-030B: MOV lbl_0311, lbl_0185
+    ; lbl_030B-0317: MOV lbl_01A1, lbl_07FC
+    INDSRC_MOV 0x01A1, 0x0185
+    ; lbl_0317-0323: MOV lbl_0338, lbl_01A1
+    MOV 0x0338, 0x01A1
+    ; lbl_0323-032C: SUB lbl_0338, lbl_01A5; JA lbl_032F
+    SUBJG 0x0338, 0x01A5, lbl_032F
+
+    lbl_032C:
+    ; lbl_032C-032F: JMP lbl_0335
+    jmp lbl_0335
+
+    lbl_032F:
+    ; lbl_032F-0335: CMP lbl_0338, 0; JZ lbl_0339
+    CMPJZ 0x0338, lbl_0339
+
+    lbl_0335:
+    ; lbl_0335-0338: JMP lbl_03E2
+    jmp lbl_03E2
+
+    lbl_0339:
+    ; lbl_0338-0339: db FF, FF
+    ; lbl_0339-0342: MMOV lbl_035D, lbl_0185
+    ; lbl_0342-034E: MOV lbl_035E, lbl_0185
+    ; lbl_034E-035A: MOV lbl_0364, lbl_0185
+    ; lbl_035A-0366: MOV lbl_07FC, lbl_01A9
+    INDDES_MOV 0x0185, 0x01A9
+    ; lbl_0366-0372: MOV lbl_0185, lbl_010F
+    MOV 0x0185, 0x010F
+    ; lbl_0372-0375: XOR lbl_0000, lbl_0000
+    ; lbl_0375-037B: MADD lbl_0185, lbl_0195
+    MADD 0x0185, 0x0195
+    ; lbl_037B-0387: MOV lbl_038D, lbl_0185
+    ; lbl_0387-0393: MOV lbl_01A1, lbl_07FA
+    INDSRC_MOV 0x01A1, 0x0185
+    ; lbl_0393-039F: MOV lbl_0002, lbl_01A1
+    MOV 0x0002, 0x01A1
+    ; lbl_039F-03AB: MOV lbl_0004, lbl_03B1
+    MOV 0x0004, 0x03B1
+    HANDLE_OUTPUT
+    ; lbl_03AB-03AE: XOR lbl_0000, lbl_0000
+    ; lbl_03AE-03B1: JMP lbl_03B2
+    jmp lbl_03B2
+
+    lbl_03B2:
+    ; lbl_03B1-03B2: db 01, 00
+    ; lbl_03B2-03BB: MMOV lbl_03D6, lbl_0185
+    ; lbl_03BB-03C7: MOV lbl_03D7, lbl_0185
+    ; lbl_03C7-03D3: MOV lbl_03DD, lbl_0185
+    ; lbl_03D3-03DF: MOV lbl_07FA, lbl_01A9
+    INDDES_MOV 0x0185, 0x01A9
+    lbl_03E2:
+    ; lbl_03DF-03EB: MOV lbl_0185, lbl_010F
+    MOV 0x0185, 0x010F
+    ; lbl_03EB-03EE: XOR lbl_0000, lbl_0000
+    ; lbl_03EE-03F4: MADD lbl_0185, lbl_0199
+    MADD 0x0185, 0x0199
+    ; lbl_03F4-0400: MOV lbl_0406, lbl_0185
+    ; lbl_0400-040C: MOV lbl_01A1, lbl_07FB
+    INDSRC_MOV 0x01A1, 0x0185
+    ; lbl_040C-0418: MOV lbl_042D, lbl_01A1
+    ; lbl_0418-0421: SUB lbl_042D, lbl_01A5; JA lbl_0424
+    MOV 0x042D, 0x01A1
+    SUBJG 0x042D, 0x01A5, lbl_0424
+
+    lbl_0421:
+    ; lbl_0421-0424: JMP lbl_042A
+    jmp lbl_042A
+
+    lbl_0424:
+    ; lbl_0424-042A: CMP lbl_042D, 0; JZ lbl_042E
+    CMPJZ 0x042D, lbl_042E
+
+    lbl_042A:
+    ; lbl_042A-042D: JMP lbl_04BF
+    jmp lbl_04BF
+
+    lbl_042E:
+    ; lbl_042D-042E: db FF, FF
+    ; lbl_042E-0437: MMOV lbl_0452, lbl_0185
+    ; lbl_0437-0443: MOV lbl_0453, lbl_0185
+    ; lbl_0443-044F: MOV lbl_0459, lbl_0185
+    ; lbl_044F-045B: MOV lbl_0000, lbl_01A9
+    INDDES_MOV 0x0185, 0x01A9
+    ; lbl_045B-0467: MOV lbl_0003, lbl_046D
+    MOV 0x0003, 0x046D
+    ; lbl_0467-046A: XOR lbl_0000, lbl_0000
+    ; lbl_046A-046D: JMP lbl_046E
+    jmp lbl_046E
+
+    lbl_046E:
+    ; lbl_046D-046E: db 01, 00
+    ; lbl_046E-0477: MMOV lbl_01A1, lbl_0001
+    MOV 0x01A1, 0x0001
+    ; lbl_0477-0483: MOV lbl_0185, lbl_010F
+    MOV 0x0185, 0x010F
+    ; lbl_0483-0486: XOR lbl_0000, lbl_0000
+    ; lbl_0486-048C: MADD lbl_0185, lbl_0191
+    MADD 0x0185, 0x0191
+    ; lbl_048C-0498: MOV lbl_04B3, lbl_0185
+    ; lbl_0498-04A4: MOV lbl_04B4, lbl_0185
+    ; lbl_04A4-04B0: MOV lbl_04BA, lbl_0185
+    ; lbl_04B0-04BC: MOV lbl_0000, lbl_01A1
+    INDDES_MOV 0x0185, 0x01A1
+    ; lbl_04BC-04BF: XOR lbl_0000, lbl_0000
+
+    lbl_04BF:
+    ; lbl_04BF-04C2: JMP lbl_01D2
+    jmp lbl_01D2
+
+    lbl_04C2:
+    ; lbl_04C2-04CB: MMOV lbl_0185, lbl_010F
+    MOV 0x0185, 0x010F
+    ; lbl_04CB-04D7: MOV lbl_04F2, lbl_0185
+    ; lbl_04D7-04E3: MOV lbl_04F3, lbl_0185
+    ; lbl_04E3-04EF: MOV lbl_04F9, lbl_0185
+    ; lbl_04EF-04FB: MOV lbl_07F6, lbl_01AD
+    INDDES_MOV 0x0185, 0x01AD
+    ; lbl_04FB-04FE: XOR lbl_0000, lbl_0000
+    ; lbl_04FE-0501: JMP lbl_0502
+    jmp lbl_0502
+
+    lbl_0502:
+    ; lbl_0501-0502: db 01, 00
+    ; lbl_0502-0503: db 01, 05
+    ; lbl_0503-0504: db FB, 00
+    ; lbl_0504-0505: db 00, 00
+    SUB 0x00FB, 0x0501
+    ; lbl_0505-050E: MMOV lbl_0514, lbl_00FB
+    ; lbl_050E-051A: MOV lbl_051F, lbl_00F7
+    ; lbl_051A-051D: XOR lbl_0000, lbl_0000
+    ; lbl_051D-0520: JMP lbl_00EB
+    INDJMP2 0x00FB
+
+    lbl_0520:
+    ; lbl_0520-0523: JMP lbl_0524
+    jmp lbl_0524
+
+    lbl_0524:
+    ; lbl_0523-0524: db FA, 00
+    ; lbl_0524-052D: MMOV lbl_0523, lbl_00FB
+    MOV 0x0523, 0x00FB
+    ; lbl_052D-0530: XOR lbl_0000, lbl_0000
+    ; lbl_0530-0533: JMP lbl_0534
+    jmp lbl_0534
+
+    lbl_0534:
+    ; lbl_0533-0534: db F6, 07
+    ; lbl_0534-0537: JMP lbl_0538
+    jmp lbl_0538
+
+    lbl_0538:
+    ; lbl_0537-0538: db FE, FF
+    ; lbl_0538-053B: JMP lbl_053C
+    jmp lbl_053C
+
+    lbl_053C:
+    ; lbl_053B-053C: db F8, 00
+    ; lbl_053C-054E: ADD lbl_053B, lbl_0523 + lbl_0537
+    ADD3 0x053B, 0x0523 , 0x0537
+    ; lbl_054E-055A: MOV lbl_0560, lbl_053B
+    ; lbl_055A-0566: MOV lbl_0533, lbl_00F8
+    INDSRC_MOV 0x0533, 0x053B
+    ; lbl_0566-0572: MOV lbl_07F1, lbl_0533
+    MOV 0x07F1, 0x0533
+    ; lbl_0572-057E: MOV lbl_0584, lbl_07F1
+    ; lbl_057E-058A: MOV lbl_07F5, lbl_07F6
+    INDSRC_MOV 0x07F5, 0x07F1
+    ; lbl_058A-058D: XOR lbl_0000, lbl_0000
+    ; lbl_058D-0593: MADD lbl_07F1, lbl_07F5
+    MADD 0x07F1, 0x07F5
+    ; lbl_0593-059F: MOV lbl_05A5, lbl_07F1
+    ; lbl_059F-05AB: MOV lbl_07EF, lbl_0E6C
+    INDSRC_MOV 0x07EF, 0x07F1
+    ; lbl_05AB-05B7: MOV lbl_05CC, lbl_07EF
+    ; lbl_05B7-05C0: SUB lbl_05CC, lbl_07F2; JA lbl_05C3
+    MOV 0x05CC, 0x07EF
+    SUBJG 0x05CC, 0x07F2, lbl_05C3
+
+    lbl_05C0:
+    ; lbl_05C0-05C3: JMP lbl_05C9
+    jmp lbl_05C9  
+
+    lbl_05C3:
+    ; lbl_05C3-05C9: CMP lbl_05CC, 0; JZ lbl_05CD
+    CMPJZ 0x05CC, lbl_05CD
+
+    lbl_05C9:
+    ; lbl_05C9-05CC: JMP lbl_0638
+    jmp lbl_0638
+
+    lbl_05CD:
+    ; lbl_05CC-05CD: db 01, 00
+    ; lbl_05CD-05D6: MMOV lbl_07F1, lbl_0533
+    MOV 0x07F1, 0x0533
+    ; lbl_05D6-05D9: XOR lbl_0000, lbl_0000
+    ; lbl_05D9-05DC: JMP lbl_05DD
+    jmp lbl_05DD
+
+    lbl_05DD:
+    ; lbl_05DC-05DD: db 01, 00
+    ; lbl_05DD-05E3: MADD lbl_07F5, lbl_05DC
+    MADD 0x07F5, 0x05DC
+    ; lbl_05E3-05EF: MOV lbl_060A, lbl_07F1
+    ; lbl_05EF-05FB: MOV lbl_060B, lbl_07F1
+    ; lbl_05FB-0607: MOV lbl_0611, lbl_07F1
+    ; lbl_0607-0613: MOV lbl_07F6, lbl_07F5
+    INDDES_MOV 0x07F1, 0x07F5
+    ; lbl_0613-0616: XOR lbl_0000, lbl_0000
+    ; lbl_0616-0619: JMP lbl_061A
+    jmp lbl_061A
+
+    lbl_061A:
+    ; lbl_0619-061A: db 01, 00
+    ; lbl_061A-061B: db 19, 06
+    ; lbl_061B-061C: db FB, 00
+    ; lbl_061C-061D: db 00, 00
+    SUB 0x00FB, 0x0619
+    ; lbl_061D-0626: MMOV lbl_062C, lbl_00FB
+    MOV 0x062C, 0x00FB
+    ; lbl_0626-0632: MOV lbl_0637, lbl_00F9
+    ; lbl_0632-0635: XOR lbl_0000, lbl_0000
+    ; lbl_0635-0638: JMP lbl_02E6
+    INDJMP 0x00F9
+
+    lbl_0638:
+    ; lbl_0638-0641: MMOV lbl_07F1, lbl_0533
+    ; lbl_0641-0644: XOR lbl_0000, lbl_0000
+    ; lbl_0644-0647: JMP lbl_0648
+    MOV 0x07F1, 0x0533
+    jmp lbl_0648
+
+    lbl_0648:
+    ; lbl_0647-0648: db 01, 00
+    ; lbl_0648-064E: MADD lbl_07F1, lbl_0647
+    MADD 0x07F1, 0x0647
+    ; lbl_064E-065A: MOV lbl_0660, lbl_07F1
+    ; lbl_065A-0666: MOV lbl_07EE, lbl_07F7
+    INDSRC_MOV 0x07EE, 0x07F1
+    ; lbl_0666-0672: MOV lbl_07F1, lbl_0533
+    MOV 0x07F1, 0x0533
+    ; lbl_0672-0675: XOR lbl_0000, lbl_0000
+    ; lbl_0675-067B: MADD lbl_07F1, lbl_07EF
+    MADD 0x07F1, 0x07EF
+    ; lbl_067B-0687: MOV lbl_068D, lbl_07F1
+    ; lbl_0687-0693: MOV lbl_07F0, lbl_07F6
+    INDSRC_MOV 0x07F0, 0x07F1
+    ; lbl_0693-069F: MOV lbl_07F4, lbl_07F0
+    MOV 0x07F4, 0x07F0
+    ; lbl_069F-06A2: XOR lbl_0000, lbl_0000
+    ; lbl_06A2-06A3: db EE, 07
+    ; lbl_06A3-06A4: db F4, 07
+    ; lbl_06A4-06A5: db 00, 00
+    SUB 0x7F4, 0x7EE
+    ; lbl_06A5-06AE: MMOV lbl_07EE, lbl_07F4
+    MOV 0x07EE, 0x07F4
+    ; lbl_06AE-06BA: MOV lbl_07F1, lbl_0533
+    MOV 0x07F1, 0x0533
+    ; lbl_06BA-06BD: XOR lbl_0000, lbl_0000
+    ; lbl_06BD-06C0: JMP lbl_06C1
+    jmp lbl_06C1
+
+    lbl_06C1:
+    ; lbl_06C0-06C1: db 01, 00
+    ; lbl_06C1-06C7: MADD lbl_07F1, lbl_06C0
+    MADD 0x07F1, 0x06C0
+    ; lbl_06C7-06D3: MOV lbl_06EE, lbl_07F1
+    ; lbl_06D3-06DF: MOV lbl_06EF, lbl_07F1
+    ; lbl_06DF-06EB: MOV lbl_06F5, lbl_07F1
+    ; lbl_06EB-06F7: MOV lbl_07F7, lbl_07EE
+    INDDES_MOV 0x07F1, 0x07EE
+    ; lbl_06F7-0703: MOV lbl_071B, lbl_07EF
+    MOV 0x071B, 0x07EF
+    ; lbl_0703-070C: SUB lbl_071B, lbl_07F3; JA lbl_070F
+    SUBJG 0x071B, 0x07F3, lbl_070F
+
+    lbl_070C:
+    ; lbl_070C-070F: JMP lbl_0715
+    jmp lbl_0715
+
+    lbl_070F:
+    ; lbl_070F-0715: CMP lbl_071B, 0; JZ lbl_0718
+    CMPJZ 0x071B, lbl_0718
+
+    lbl_0715:
+    ; lbl_0715-0718: JMP lbl_071C
+    jmp lbl_071C
+
+
+    lbl_0718:
+    ; BUGFIX: LOOKS STRANGE
+    ; lbl_0718-071B: JMP lbl_0761
+    jmp lbl_0761
+
+    lbl_071C:
+    ; lbl_071B-071C: db FE, FF
+    ; lbl_071C-072E: ADD lbl_07F1, lbl_07EF + lbl_0533
+    ADD3 0x07F1, 0x07EF , 0x0533
+    ; lbl_072E-073A: MOV lbl_0755, lbl_07F1
+    ; lbl_073A-0746: MOV lbl_0756, lbl_07F1
+    ; lbl_0746-0752: MOV lbl_075C, lbl_07F1
+    ; lbl_0752-075E: MOV lbl_07F6, lbl_07EE
+    INDDES_MOV 0x07F1, 0x07EE
+    lbl_0761:
+    ; lbl_075E-076A: MOV lbl_0770, lbl_0533
+    ; lbl_076A-0776: MOV lbl_07F5, lbl_07F6
+    INDSRC_MOV 0x07F5, 0x0533
+    ; lbl_0776-0779: XOR lbl_0000, lbl_0000
+    ; lbl_0779-077A: db EE, 07
+    ; lbl_077A-077B: db 00, 00
+    ; lbl_077B-077C: db 7F, 07
+    xor eax, eax
+    cmp ax, word [variables + 0x7EE * 2]
+    jle lbl_077F
+
+    lbl_077C:
+    ; lbl_077C-077F: JMP lbl_0782
+    jmp lbl_0782
+
+    lbl_077F:
+    ; lbl_077F-0782: JMP lbl_078F
+    jmp lbl_078F
+
+    lbl_0782:
+    ; lbl_0782-0785: JMP lbl_0786
+    jmp lbl_0786
+
+    lbl_0786:
+    ; lbl_0785-0786: db 01, 00
+    ; lbl_0786-078C: MADD lbl_07F5, lbl_0785
+    ; lbl_078C-078F: XOR lbl_0000, lbl_0000
+    MADD 0x07F5, 0x0785
+
+    lbl_078F:
+    ; lbl_078F-0792: JMP lbl_0793
+    jmp lbl_0793
+
+    lbl_0793:
+    ; lbl_0792-0793: db 01, 00
+    ; lbl_0793-0799: MADD lbl_07F5, lbl_0792
+    MADD 0x07F5, 0x0792
+    ; lbl_0799-07A5: MOV lbl_07C0, lbl_0533
+    ; lbl_07A5-07B1: MOV lbl_07C1, lbl_0533
+    ; lbl_07B1-07BD: MOV lbl_07C7, lbl_0533
+    ; lbl_07BD-07C9: MOV lbl_07F6, lbl_07F5
+    INDDES_MOV 0x0533, 0x07F5
+    ; lbl_07C9-07CC: XOR lbl_0000, lbl_0000
+    ; lbl_07CC-07CF: JMP lbl_07D0
+    jmp lbl_07D0
+
+    lbl_07D0:
+    ; lbl_07CF-07D0: db 01, 00
+    ; lbl_07D0-07D1: db CF, 07
+    ; lbl_07D1-07D2: db FB, 00
+    ; lbl_07D2-07D3: db 00, 00
+    SUB 0x00FB, 0x07CF
+    ; lbl_07D3-07DC: MMOV lbl_07E2, lbl_00FB
+    MOV 0x07E2, 0x00FB
+    ; lbl_07DC-07E8: MOV lbl_07ED, lbl_00F9
+    ; lbl_07E8-07EB: XOR lbl_0000, lbl_0000
+    ; lbl_07EB-07EE: JMP lbl_02E6
+    INDJMP 0x00F9
+    ; lbl_07EE-07EF: db 78, 06
+    ; lbl_07EF-07F0: db 00, 00
+    ; lbl_07F0-07F1: db 76, 06
+    ; lbl_07F1-07F2: db F6, 07
+    ; lbl_07F2-07F3: db FF, FF
+    ; lbl_07F3-07F4: db 02, 00
+    ; lbl_07F4-07F5: db 78, 06
+    ; lbl_07F5-07F6: db 79, 06
+    ; lbl_07F6-07F7: db 5B, 01
+    ; lbl_07F7-07FD: MADD lbl_0000, lbl_0678
+
+    end:
+    leave
+    ret
+_main:
+    pusha
+    popa
+    call vm_entry
+    push 0
+    call	_ExitProcess@4
+
+SECTION .data
+variables:
+    TODAD
+
+strHello: db "Hello world", 0
+strHell0.len equ $ - strHello
+strError: db "An error happend...", 0
+strError.len equ $ - strError
